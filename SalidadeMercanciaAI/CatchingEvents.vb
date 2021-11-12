@@ -104,17 +104,69 @@
     Private Sub SBOApplication_ItemEvent(ByVal FormUID As String, ByRef pVal As SAPbouiCOM.ItemEvent, ByRef BubbleEvent As Boolean) Handles SBOApplication.ItemEvent
 
         If pVal.Before_Action = True And pVal.FormTypeEx <> "" Then
+
+            Select Case pVal.FormTypeEx
+
+                Case 143                           '////// FORMA Entrada de Mercancías
+
+                    frmOINVControllerBefore(FormUID, pVal)
+
+            End Select
+
         Else
             If pVal.Before_Action = False And pVal.FormTypeEx <> "" Then
                 Select Case pVal.FormTypeEx
 
                     Case 143                           '////// FORMA Entrada de Mercancías
+
                         frmOINVControllerAfter(FormUID, pVal)
 
                 End Select
             End If
         End If
 
+    End Sub
+
+
+    '//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    '// CONTROLADOR DE EVENTOS FORMA Entrada de Mercancías
+    '//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    Private Sub frmOINVControllerBefore(ByVal FormUID As String, ByVal pVal As SAPbouiCOM.ItemEvent)
+
+        'Dim oSNE As FrmtekEcommerce
+        'Dim obotton As OINV
+        Dim coForm As SAPbouiCOM.Form
+        Dim stTabla As String
+        Dim oDatatable As SAPbouiCOM.DBDataSource
+        Dim CardCode As String
+
+        Try
+
+            Select Case pVal.EventType
+
+                '//////Evento Presionar Item
+                Case SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED
+
+                    Select Case pVal.ItemUID
+
+                        Case "1"
+
+                            stTabla = "OPDN"
+                            coForm = SBOApplication.Forms.Item(FormUID)
+
+                            oDatatable = coForm.DataSources.DBDataSources.Item(stTabla)
+                            DocNum = oDatatable.GetValue("DocNum", 0)
+                            CardCode = oDatatable.GetValue("CardCode", 0)
+
+                    End Select
+
+            End Select
+
+        Catch ex As Exception
+            SBOApplication.MessageBox("Error en el evento sobre Forma Facturacion Clientes. " & ex.Message)
+        Finally
+            'oPO = Nothing
+        End Try
     End Sub
 
 
