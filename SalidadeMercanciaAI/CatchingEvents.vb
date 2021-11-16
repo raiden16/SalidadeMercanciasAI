@@ -163,7 +163,7 @@
             End Select
 
         Catch ex As Exception
-            SBOApplication.MessageBox("Error en el evento sobre Forma Facturacion Clientes. " & ex.Message)
+            SBOApplication.MessageBox("Error en el evento Before sobre Forma Entrada de Mercancia. " & ex.Message)
         Finally
             'oPO = Nothing
         End Try
@@ -175,13 +175,8 @@
     '//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Private Sub frmOINVControllerAfter(ByVal FormUID As String, ByVal pVal As SAPbouiCOM.ItemEvent)
 
-        'Dim oSNE As FrmtekEcommerce
-        'Dim obotton As OINV
-        Dim coForm As SAPbouiCOM.Form
-        Dim stTabla As String
-        Dim oDatatable As SAPbouiCOM.DBDataSource
-        Dim Respuesta As Integer
-        Dim ClientType, CardCode As String
+        Dim oOPDN As SalidaMercancia
+        Dim DocEntry As String
         Dim stQueryH As String
         Dim oRecSetH As SAPbobsCOM.Recordset
 
@@ -191,11 +186,6 @@
 
             Select Case pVal.EventType
 
-                '///// Carga de formas
-                Case SAPbouiCOM.BoEventTypes.et_FORM_LOAD
-                    'obotton = New OINV
-                    'obotton.addFormItems(FormUID)
-
                 '//////Evento Presionar Item
                 Case SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED
 
@@ -203,45 +193,24 @@
 
                         Case "1"
 
-                            'stTabla = "OINV"
-                            'coForm = SBOApplication.Forms.Item(FormUID)
+                            stQueryH = "Select ""DocEntry"" from OPDN where ""DocNum""='" & DocNum & "'"
+                            oRecSetH.DoQuery(stQueryH)
 
-                            'oDatatable = coForm.DataSources.DBDataSources.Item(stTabla)
-                            'DocNum = oDatatable.GetValue("DocNum", 0)
-                            'CardCode = oDatatable.GetValue("CardCode", 0)
+                            If oRecSetH.RecordCount = 1 Then
 
-                            'stQueryH = "Select ""GroupCode"" from OCRD where ""CardCode""='" & CardCode & "'"
-                            'oRecSetH.DoQuery(stQueryH)
+                                DocEntry = oRecSetH.Fields.Item("DocEntry").Value
 
-                            'If oRecSetH.RecordCount = 1 Then
+                                oOPDN = New SalidaMercancia
+                                oOPDN.AddSalidaMercancia(DocNum, DocEntry)
 
-                            '    ClientType = oRecSetH.Fields.Item("GroupCode").Value
-
-                            '    If ClientType = 121 Then
-
-                            '        Respuesta = SBOApplication.MessageBox("¿Deseas ReFacturar este documento?", Btn1Caption:="Si", Btn2Caption:="No")
-
-                            '        If Respuesta = 1 Then
-
-                            '            'oSNE = New FrmtekEcommerce
-                            '            'oSNE.openForm(csDirectory)
-
-                            '        End If
-
-                            '    Else
-
-                            '        SBOApplication.MessageBox("No se puede Refacturar para este cliente")
-
-                            '    End If
-
-                            'End If
+                            End If
 
                     End Select
 
             End Select
 
         Catch ex As Exception
-            SBOApplication.MessageBox("Error en el evento sobre Forma Facturacion Clientes. " & ex.Message)
+            SBOApplication.MessageBox("Error en el evento After sobre Forma Entrada de Mercancia. " & ex.Message)
         Finally
             'oPO = Nothing
         End Try
