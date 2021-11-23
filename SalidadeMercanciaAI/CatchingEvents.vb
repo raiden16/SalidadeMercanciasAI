@@ -201,7 +201,7 @@
                                 DocEntry = oRecSetH.Fields.Item("DocEntry").Value
 
                                 oOPDN = New SalidaMercancia
-                                oOPDN.AddSalidaMercancia(DocNum, DocEntry)
+                                oOPDN.AddSalidaEntrada(DocNum, DocEntry)
 
                             End If
 
