@@ -106,6 +106,7 @@
 
             oOIGE.DocDate = DateTime.Now
             oOIGE.Reference2 = DocNum
+            oOIGE.Comments = "Ajuste automatico de la Entrada de Mercancias por compras Número: " & DocNum
 
             oRecSetH2.MoveFirst()
 
@@ -193,6 +194,7 @@
 
             oOIGN.DocDate = DateTime.Now
             oOIGN.Reference2 = DocNum
+            oOIGN.Comments = "Ajuste automatico de la Entrada de Mercancias por compras Número: " & DocNum
 
             oRecSetH2.MoveFirst()
 
