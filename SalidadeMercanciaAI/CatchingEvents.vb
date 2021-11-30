@@ -177,10 +177,11 @@
 
         Dim oOPDN As SalidaMercancia
         Dim DocEntry As String
-        Dim stQueryH As String
-        Dim oRecSetH As SAPbobsCOM.Recordset
+        Dim stQueryH, stQueryH2 As String
+        Dim oRecSetH, oRecSetH2 As SAPbobsCOM.Recordset
 
         oRecSetH = SBOCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
+        oRecSetH2 = SBOCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset)
 
         Try
 
@@ -200,8 +201,15 @@
 
                                 DocEntry = oRecSetH.Fields.Item("DocEntry").Value
 
-                                oOPDN = New SalidaMercancia
-                                oOPDN.AddSalidaEntrada(DocNum, DocEntry)
+                                stQueryH2 = "Select 'Entrada' as ""Document"",""DocNum"" from OIGN where ""Comments"" like '%" & DocNum & "' Union all Select 'Salida' as ""Document"",""DocNum"" from OIGE where ""Comments"" like '%" & DocNum & "'"
+                                oRecSetH2.DoQuery(stQueryH2)
+
+                                If oRecSetH2.RecordCount = 0 Then
+
+                                    oOPDN = New SalidaMercancia
+                                    oOPDN.AddSalidaEntrada(DocNum, DocEntry)
+
+                                End If
 
                             End If
 
